@@ -36,34 +36,4 @@ jobs:
           LANGFUSE_HOST: ${{ secrets.LANGFUSE_HOST }}
         timeout-minutes: 2
         run: |
-          # Cambiar share=False a share=True
-          sed -i 's/share=False/share=True/g' app.py
-
-          echo ""
-          echo "=========================================="
-          echo "🚀 Iniciando Gradio App..."
-          echo "⏳ Esperando URL pública..."
-          echo "=========================================="
-          echo ""
-
-          # Ejecutar con timeout, mostrando toda la salida y capturando la URL
-          timeout 90s bash -c '
-            uv run python app.py 2>&1 | while IFS= read -r line; do
-              echo "$line"
-              if echo "$line" | grep -q "Running on public URL:"; then
-                PUBLIC_URL=$(echo "$line" | awk "{print \$NF}")
-                sleep 1
-                echo ""
-                echo "=========================================="
-                echo "✅ ¡Gradio iniciado correctamente!"
-                echo ""
-                echo "🌍 URL PÚBLICA: $PUBLIC_URL"
-                echo ""
-                echo "⚠️  Esta URL estará activa durante 72 horas"
-                echo "=========================================="
-                echo ""
-                pkill -P $$ python
-                exit 0
-              fi
-            done
-          ' || true
+          uv run python app.py
