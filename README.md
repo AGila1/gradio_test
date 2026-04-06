@@ -14,14 +14,23 @@ Aplicación de chatbot sobre el Real Madrid usando OpenAI (GPT-4) con preferenci
 
 ## 🚀 Instalación
 
+> ⚠️ **Este proyecto usa `uv` exclusivamente**. No es compatible con `pip` o `venv` tradicionales.
+
 1. **Clona o descarga este proyecto**
 
-2. **Instala las dependencias:**
+2. **Instala uv (si no lo tienes):**
 ```bash
-pip install -r requirements.txt
+curl -LsSf https://astral.sh/uv/install.sh | sh
+# o en macOS con Homebrew:
+brew install uv
 ```
 
-3. **Configura tu clave API de OpenAI:**
+3. **Instala las dependencias:**
+```bash
+uv sync
+```
+
+4. **Configura tu clave API de OpenAI:**
    - Crea un archivo `.env` en la raíz del proyecto
    ```bash
    touch .env
@@ -35,7 +44,7 @@ pip install -r requirements.txt
    - Ve a [OpenAI Platform](https://platform.openai.com/api-keys)
    - Crea una clave API (requiere cuenta y método de pago)
 
-4. **🔍 (Opcional) Configura Langfuse para observabilidad:**
+5. **🔍 (Opcional) Configura Langfuse para observabilidad:**
    - Crea una cuenta gratuita en [Langfuse Cloud](https://cloud.langfuse.com)
    - Obtén tus credenciales (Public Key y Secret Key)
    - Añádelas a tu archivo `.env`:
@@ -55,7 +64,7 @@ pip install -r requirements.txt
 
 1. **Ejecuta la aplicación:**
 ```bash
-python app.py
+uv run python app.py
 ```
 
 2. **Abre tu navegador en:**

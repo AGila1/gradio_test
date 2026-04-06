@@ -1,0 +1,12 @@
+[project]
+name = "real-madrid-chatbot"
+version = "0.1.0"
+description = "ChatBot del Real Madrid con OpenAI y Gradio"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "gradio>=4.0.0",
+    "openai>=1.0.0",
+    "python-dotenv>=1.0.0",
+    "langfuse>=2.0.0",
+]

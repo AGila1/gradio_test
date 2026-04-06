@@ -18,11 +18,15 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
 
-      - name: Install dependencies
+      - name: Install uv
         run: |
-          pip install -r requirements.txt
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies with uv
+        run: |
+          uv sync
 
       - name: Run Gradio App with share=True
         env:
@@ -35,4 +39,4 @@ jobs:
           sed -i 's/share=False/share=True/g' app.py
 
           # Ejecutar la app (se mantendrá activa durante 72 horas con el link público)
-          python app.py
+          uv run python app.py
