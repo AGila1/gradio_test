@@ -34,9 +34,46 @@ jobs:
           LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
           LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
           LANGFUSE_HOST: ${{ secrets.LANGFUSE_HOST }}
+        timeout-minutes: 2
         run: |
           # Cambiar share=False a share=True
           sed -i 's/share=False/share=True/g' app.py
 
-          # Ejecutar la app (se mantendrá activa durante 72 horas con el link público)
-          uv run python app.py
+          # Ejecutar la app en background y capturar logs
+          uv run python app.py > gradio.log 2>&1 &
+          APP_PID=$!
+
+          echo "🚀 Iniciando Gradio App (PID: $APP_PID)..."
+          echo "⏳ Esperando URL pública de Gradio..."
+
+          # Esperar hasta que aparezca la URL de Gradio (máximo 30 segundos)
+          for i in {1..30}; do
+            if grep -q "Running on public URL:" gradio.log; then
+              echo ""
+              echo "✅ ¡Gradio App iniciada correctamente!"
+              echo ""
+              echo "📋 LOGS COMPLETOS:"
+              echo "===================="
+              cat gradio.log
+              echo "===================="
+              echo ""
+
+              # Extraer y mostrar la URL pública
+              PUBLIC_URL=$(grep "Running on public URL:" gradio.log | awk '{print $NF}')
+              echo "🌍 URL PÚBLICA: $PUBLIC_URL"
+              echo ""
+              echo "⚠️  Esta URL estará activa durante 72 horas"
+              echo ""
+
+              # Matar el proceso
+              kill $APP_PID
+              exit 0
+            fi
+            sleep 1
+          done
+
+          # Si llegamos aquí, timeout
+          echo "❌ Timeout: No se pudo obtener la URL en 30 segundos"
+          cat gradio.log
+          kill $APP_PID
+          exit 1
